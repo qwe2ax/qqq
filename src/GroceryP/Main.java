@@ -1,18 +1,9 @@
-package GroceryPackage;
+package GroceryP;
 
 import java.util.*;// Я СТАРАЛСЯ КЛЯНУС
 
 public class Main {
     public static void main(String[] args) {
-        Products pomidor = new Products(3, "Помидор");
-        Products yabloko = new Products(10, "Яблоко");
-        Products grusha = new Products(20, "Груша");
-        Products moloko = new Products(60, "Молоко");
-        Products myaso = new Products(90, "Мясо");
-        ArrayList<Products> productsList = new ArrayList<>();
-        productsList.add(pomidor);
-        productsList.add(yabloko);
-        productsList.add(grusha);
         printMenu();
         System.out.println(productsList);
         Scanner console = new Scanner(System.in);
@@ -34,15 +25,24 @@ public class Main {
                 System.out.println("Программа завершила свою работу");
                 System.exit(0);
             }
-            System.out.println("1. Продолжить\n" + "2. Выйти");
-            int cont = console.nextInt();
-            if (cont == 2) {
-                System.out.println("Программа завершила работу");
-                System.exit(0);
-            }
-            printMenu();
+            printMenu(); // ЭТА ЧЕПУХА ВЫЗЫВАЕТСЯ ПОСЛЕ ДЕЙСТВИЯ В МЕНЮ КАК ЭТО ПОФИКСИТ Я ЕЩЕ НЕ ГУГЛИЛ
             menuNum = console.nextInt();
         }
+    }
+
+    public final static ArrayList<Product> productsList = new ArrayList<>();
+
+    static {
+        Product pomidor = new Product(3, "Помидор");
+        Product yabloko = new Product(10, "Яблоко");
+        Product grusha = new Product(20, "Груша");
+        Product moloko = new Product(60, "Молоко");
+        Product myaso = new Product(90, "Мясо");
+        productsList.add(pomidor);
+        productsList.add(yabloko);
+        productsList.add(grusha);
+        productsList.add(moloko);
+        productsList.add(myaso);
     }
 
     public static void printMenu() {
@@ -51,10 +51,9 @@ public class Main {
                 "4. Выход");
     }
 
-    public static String priceChanger(String productName, int newPrice, ArrayList<Products> products) {
-        for (Products product : products) {
-            if (product.getProductName().equals(productName) || product.getProductName().toLowerCase().equals(productName)
-                    || product.getProductName().toUpperCase().equals(productName)) {
+    public static String priceChanger(String productName, int newPrice, ArrayList<Product> products) {
+        for (Product product : products) {
+            if (product.getProductName().equalsIgnoreCase(productName)) {
                 product.setPrice(newPrice);
                 return String.format("Цена товара %s изменена на %d", productName, newPrice);
             }
@@ -62,18 +61,17 @@ public class Main {
         return "Товара не существует";
     }
 
-    public static void showCatalog(ArrayList<Products> products) {
+    public static void showCatalog(ArrayList<Product> products) {
         StringBuilder catalog = new StringBuilder();
-        for (Products product : products) {
+        for (Product product : products) {
             catalog.append(product.getProductName()).append(" ").append(product.getPrice()).append("р\n");
         }
         System.out.println(catalog);
     }
 
-    public static String purchase(String productName, ArrayList<Products> products) {
-        for (Products product : products) {
-            if (product.getProductName().equals(productName) || product.getProductName().toLowerCase().equals(productName)
-                    || product.getProductName().toUpperCase().equals(productName)) ;
+    public static String purchase(String productName, ArrayList<Product> products) {
+        for (Product product : products) {
+            if (product.getProductName().equalsIgnoreCase(productName)) ;
             {
                 return String.format("Вы купили %s с вас %d рублей", productName, product.getPrice());
             }
@@ -82,7 +80,7 @@ public class Main {
     }
 }
 
-class Products {
+class Product {
     int price;
     String productName;
 
@@ -108,7 +106,7 @@ class Products {
                 ", productName='" + productName + '\'' + '}';
     }
 
-    public Products(int price, String productName) {
+    public Product(int price, String productName) {
         this.price = price;
         this.productName = productName;
     }
