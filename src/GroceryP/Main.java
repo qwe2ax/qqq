@@ -27,6 +27,33 @@ public class Main {
 
             } else if (menuNum == 4) {
                 System.out.println("Счёт за товары равен " + cashRegister + "р");
+            } else if (menuNum == 5) {
+                System.out.println("Действия со складом:\n" +
+                        "1. Посмотреть склад \n" +
+                        "2. Добавить продукт\n" +
+                        "3. Посчитать общую стоимость продукта\n" +
+                        "4. Посчитать общую стоимость всех продуктов\n" +
+                        "0. Выйти");
+                int action = console.nextInt();
+
+                if (action == 1) {
+                    System.out.println(showStorage(productsList));
+
+                } else if (action == 2) {
+                    System.out.println("Введите название продукта:");
+                    String productName = console.next();
+                    System.out.println("Введите количество добавляемых продуктов: ");
+                    int addedProducts = console.nextInt();
+                    System.out.println(editStorage(productsList, productName, addedProducts));
+
+                } else if (action == 3) {
+                    System.out.println("Введите название продукта:");
+                    String productName = console.next();
+                    System.out.println(sumOfProduct(productsList, productName));
+                } else if (action == 4) {
+                    System.out.println(sumOfAllProducts(productsList));
+                }
+
             } else if (menuNum == 0) {
                 System.out.println("Программа завершила свою работу");
                 System.exit(0);
@@ -38,19 +65,14 @@ public class Main {
     }
 
 
-    public static int cashCounter(String[] num) {
-        String result = num[num.length - 1];
-        return Integer.parseInt(result);
-    }
-
-    public final static ArrayList<Product> productsList = new ArrayList<>();
+    public static final ArrayList<Product> productsList = new ArrayList<>();
 
     static {
-        Product yabloko = new Product(10, "Яблоко");
-        Product pomidor = new Product(3, "Помидор");
-        Product grusha = new Product(20, "Груша");
-        Product moloko = new Product(60, "Молоко");
-        Product myaso = new Product(90, "Мясо");
+        Product yabloko = new Product(10, "Яблоко", 5);
+        Product pomidor = new Product(3, "Помидор", 5);
+        Product grusha = new Product(20, "Груша", 5);
+        Product moloko = new Product(60, "Молоко", 5);
+        Product myaso = new Product(90, "Мясо", 5);
         productsList.add(pomidor);
         productsList.add(yabloko);
         productsList.add(grusha);
@@ -58,10 +80,54 @@ public class Main {
         productsList.add(myaso);
     }
 
+    public static String sumOfAllProducts(ArrayList<Product> products) {
+        int sum = 0;
+        for (Product product : products) {
+            sum += product.getPrice() * product.getStorage();
+        }
+        return String.format("Общая стоимость всех продуктов равна %dр", sum);
+    }
+
+    public static String sumOfProduct(ArrayList<Product> products, String productName) {
+        long sum = 0;
+        for (Product product : products) {
+            if (product.getProductName().equalsIgnoreCase(productName)) {
+                sum = (long) product.storage * product.price;
+                return String.format("Общая стоимость продукта %s равна %dр", productName, sum);
+            }
+        }
+        return "Товар не найден";
+    }
+
+    public static String editStorage(ArrayList<Product> products, String productName, int addedProducts) {
+        for (Product product : products) {
+            if (product.getProductName().equalsIgnoreCase(productName)) {
+                product.setStorage(product.storage + addedProducts);
+                return String.format("Добавлено %d %s текущее количество %s равно %d", addedProducts, productName, productName, product.getStorage());
+            }
+        }
+        return "Продукт не найден";
+    }
+
+    public static String showStorage(ArrayList<Product> products) {
+        StringBuilder result = new StringBuilder();
+        for (Product s : products) {
+            result.append(s).append("\n");
+        }
+        return result.toString();
+    }
+
+    public static int cashCounter(String[] num) {
+        String result = num[num.length - 1];
+        return Integer.parseInt(result);
+    }
+
+
     public static void printMenu() {
         System.out.println("Меню действий:\n" + "1. Купить товар\n" +
                 "2. Посмотреть каталог\n" + "3. Изменить цену\n" +
                 "4. Посмотреть кассу\n" +
+                "5. Склад\n" +
                 "0. Выход");
     }
 
@@ -86,6 +152,7 @@ public class Main {
     public static String purchase(String productName, ArrayList<Product> products) {
         for (Product product : products) {
             if (product.getProductName().equalsIgnoreCase(productName)) {
+                product.setStorage(product.storage - 1);
                 return String.format("Вы купили %s с вас %dр", productName, product.getPrice());
             }
         }
@@ -96,15 +163,26 @@ public class Main {
 class Product {
     int price;
 
-    public Product(int price, String productName) {
+    String productName;
+
+    int storage;
+
+    public Product(int price, String productName, int storage) {
         this.price = price;
         this.productName = productName;
+        this.storage = storage;
     }
-
-    String productName;
 
     public int getPrice() {
         return price;
+    }
+
+    public int getStorage() {
+        return storage;
+    }
+
+    public void setStorage(int storage) {
+        this.storage = storage;
     }
 
     public void setPrice(int price) {
@@ -121,9 +199,8 @@ class Product {
 
     @Override
     public String toString() {
-        return "Products{" + "price=" + price +
-                ", productName='" + productName + '\'' + '}';
+        return "Название товара: " + productName +
+                ", Стоимость: " + price +
+                ", Количество на складе: " + storage + ";";
     }
-
-
 }
