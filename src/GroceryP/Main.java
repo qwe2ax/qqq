@@ -10,57 +10,71 @@ public class Main {
         Scanner console = new Scanner(System.in);
         int menuNum = console.nextInt();
         while (true) {
-            if (menuNum == 1) {
-                System.out.println("Введите название товара");
-                String resultOfPurchase = (purchase(console.next(), productsList));
-                System.out.println(resultOfPurchase);
-                cashRegister += cashCounter(resultOfPurchase.split("[\\D]"));
-            } else if (menuNum == 2) {
-                System.out.println("Каталог товаров:");
-                showCatalog(productsList);
-            } else if (menuNum == 3) {
-                System.out.println("Введите название товара:");
-                String productName = console.next();
-                System.out.println("Введите новую цену:");
-                int newPrice = console.nextInt();
-                System.out.println(priceChanger(productName, newPrice, productsList));
-
-            } else if (menuNum == 4) {
-                System.out.println("Счёт за товары равен " + cashRegister + "р");
-            } else if (menuNum == 5) {
-                System.out.println("Действия со складом:\n" +
-                        "1. Посмотреть склад \n" +
-                        "2. Добавить продукт\n" +
-                        "3. Посчитать общую стоимость продукта\n" +
-                        "4. Посчитать общую стоимость всех продуктов\n" +
-                        "0. Выйти");
-                int action = console.nextInt();
-
-                if (action == 1) {
-                    System.out.println(showStorage(productsList));
-
-                } else if (action == 2) {
-                    System.out.println("Введите название продукта:");
+            switch (menuNum) {
+                case 1:
+                    System.out.println("Введите название товара");
+                    String productName0 = console.next();
+                    String resultOfPurchase = (purchase(productName0, productsList));
+                    System.out.println(resultOfPurchase);
+                    if (!resultOfPurchase.equalsIgnoreCase(String.format("Товар %s закончился", productName0))) {
+                        cashRegister += cashCounter(resultOfPurchase.split("[\\D]"));
+                    }
+                    break;
+                case 2:
+                    System.out.println("Каталог товаров:");
+                    showCatalog(productsList);
+                    break;
+                case 3:
+                    System.out.println("Введите название товара:");
                     String productName = console.next();
-                    System.out.println("Введите количество добавляемых продуктов: ");
-                    int addedProducts = console.nextInt();
-                    System.out.println(editStorage(productsList, productName, addedProducts));
+                    System.out.println("Введите новую цену:");
+                    int newPrice = console.nextInt();
+                    System.out.println(priceChanger(productName, newPrice, productsList));
+                    break;
+                case 4:
+                    System.out.println("Счёт за товары равен " + cashRegister + "р");
+                    break;
+                case 5:
+                    System.out.println("Действия со складом:\n" +
+                            "1. Посмотреть склад\n" +
+                            "2. Добавить продукт\n" +
+                            "3. Посчитать общую стоимость продукта\n" +
+                            "4. Посчитать общую стоимость всех продуктов\n" +
+                            "0. Выйти");
+                    int action = console.nextInt();
+                    switch (action) {
+                        case 1:
+                            System.out.println(showStorage(productsList));
+                            break;
+                        case 2:
+                            System.out.println("Введите название продукта:");
+                            String productName2 = console.next();
+                            System.out.println("Введите количество добавляемых продуктов: ");
+                            int addedProducts = console.nextInt();
+                            System.out.println(editStorage(productsList, productName2, addedProducts));
+                            break;
+                        case 3:
+                            System.out.println("Введите название продукта:");
+                            String productName1 = console.next();
+                            System.out.println(sumOfProduct(productsList, productName1));
+                            break;
+                        case 4:
+                            System.out.println(sumOfAllProducts(productsList));
+                            break;
+                        default:
+                            System.out.println("Неверный ввод");
+                    }
+                    break;
+                case 0:
+                    System.out.println("Программа завершила свою работу");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Неверный ввод");
 
-                } else if (action == 3) {
-                    System.out.println("Введите название продукта:");
-                    String productName = console.next();
-                    System.out.println(sumOfProduct(productsList, productName));
-                } else if (action == 4) {
-                    System.out.println(sumOfAllProducts(productsList));
-                }
-
-            } else if (menuNum == 0) {
-                System.out.println("Программа завершила свою работу");
-                System.exit(0);
             }
             printMenu();
             menuNum = console.nextInt();
-
         }
     }
 
@@ -152,6 +166,9 @@ public class Main {
     public static String purchase(String productName, ArrayList<Product> products) {
         for (Product product : products) {
             if (product.getProductName().equalsIgnoreCase(productName)) {
+                if (product.getStorage() == 0) {
+                    return String.format("Товар %s закончился", productName);
+                }
                 product.setStorage(product.storage - 1);
                 return String.format("Вы купили %s с вас %dр", productName, product.getPrice());
             }
