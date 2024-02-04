@@ -1,14 +1,17 @@
 package GroceryP;
 
+import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        init init = new init();
         int cashRegister = 0;
-        printMenu();
         System.out.println(productsList);
+        printMenu();
         Scanner console = new Scanner(System.in);
         int menuNum = console.nextInt();
+
         while (true) {
             switch (menuNum) {
                 case 1:
@@ -67,6 +70,7 @@ public class Main {
                     break;
                 case 0:
                     System.out.println("Программа завершила свою работу");
+                    init.writer();
                     System.exit(0);
                     break;
                 default:
@@ -82,16 +86,32 @@ public class Main {
     public static final ArrayList<Product> productsList = new ArrayList<>();
 
     static {
-        Product yabloko = new Product(10, "Яблоко", 5);
-        Product pomidor = new Product(3, "Помидор", 5);
-        Product grusha = new Product(20, "Груша", 5);
-        Product moloko = new Product(60, "Молоко", 5);
-        Product myaso = new Product(90, "Мясо", 5);
+        init init = new init();
+        Product yabloko = null;
+        Product pomidor = null;
+        Product grusha = null;
+        Product moloko = null;
+        Product myaso = null;
+        try {
+            yabloko = new Product(init.priceChanger("Яблоко"), "Яблоко", init.storageChanger("Яблоко"));
+            pomidor = new Product(init.priceChanger("Помидор"), "Помидор", init.storageChanger("Помидор"));
+            grusha = new Product(init.priceChanger("Груша"), "Груша", init.storageChanger("Груша"));
+            moloko = new Product(init.priceChanger("Молоко"), "Молоко", init.storageChanger("Молоко"));
+            myaso = new Product(init.priceChanger("Мясо"), "Мясо", init.storageChanger("Мясо"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         productsList.add(pomidor);
         productsList.add(yabloko);
         productsList.add(grusha);
         productsList.add(moloko);
         productsList.add(myaso);
+
+        try {
+            init.writer();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String sumOfAllProducts(ArrayList<Product> products) {
@@ -126,7 +146,7 @@ public class Main {
     public static String showStorage(ArrayList<Product> products) {
         StringBuilder result = new StringBuilder();
         for (Product s : products) {
-            result.append(s).append("\n");
+            result.append(s);
         }
         return result.toString();
     }
@@ -218,6 +238,8 @@ class Product {
     public String toString() {
         return "Название товара: " + productName +
                 ", Стоимость: " + price +
-                ", Количество на складе: " + storage + ";";
+                ", Количество на складе: " + storage + "\n";
     }
 }
+
+
