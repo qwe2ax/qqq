@@ -4,6 +4,38 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+
+    public static final ArrayList<Product> productsList = new ArrayList<>();
+
+    static {
+        init init = new init();
+        Product yabloko = null;
+        Product pomidor = null;
+        Product grusha = null;
+        Product moloko = null;
+        Product myaso = null;
+        try {
+            yabloko = new Product(init.priceChanger("Яблоко"), "Яблоко", init.storageChanger("Яблоко"));
+            pomidor = new Product(init.priceChanger("Помидор"), "Помидор", init.storageChanger("Помидор"));
+            grusha = new Product(init.priceChanger("Груша"), "Груша", init.storageChanger("Груша"));
+            moloko = new Product(init.priceChanger("Молоко"), "Молоко", init.storageChanger("Молоко"));
+            myaso = new Product(init.priceChanger("Мясо"), "Мясо", init.storageChanger("Мясо"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        productsList.add(pomidor);
+        productsList.add(yabloko);
+        productsList.add(grusha);
+        productsList.add(moloko);
+        productsList.add(myaso);
+
+        try {
+            init.writer();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         init init = new init();
         int cashRegister = 0;
@@ -82,37 +114,6 @@ public class Main {
         }
     }
 
-
-    public static final ArrayList<Product> productsList = new ArrayList<>();
-
-    static {
-        init init = new init();
-        Product yabloko = null;
-        Product pomidor = null;
-        Product grusha = null;
-        Product moloko = null;
-        Product myaso = null;
-        try {
-            yabloko = new Product(init.priceChanger("Яблоко"), "Яблоко", init.storageChanger("Яблоко"));
-            pomidor = new Product(init.priceChanger("Помидор"), "Помидор", init.storageChanger("Помидор"));
-            grusha = new Product(init.priceChanger("Груша"), "Груша", init.storageChanger("Груша"));
-            moloko = new Product(init.priceChanger("Молоко"), "Молоко", init.storageChanger("Молоко"));
-            myaso = new Product(init.priceChanger("Мясо"), "Мясо", init.storageChanger("Мясо"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        productsList.add(pomidor);
-        productsList.add(yabloko);
-        productsList.add(grusha);
-        productsList.add(moloko);
-        productsList.add(myaso);
-
-        try {
-            init.writer();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public static String sumOfAllProducts(ArrayList<Product> products) {
         int sum = 0;
